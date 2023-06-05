@@ -17,7 +17,6 @@ main:
 	movz x10, 0x00, lsl 16
 	movk x10, 0x0000, lsl 00
 
-	bl setpixel
 	bl cuadrado
 
 InfLoop:
