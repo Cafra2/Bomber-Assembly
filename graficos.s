@@ -40,10 +40,11 @@ ret // Recibe dos coordenadas que seran la posicion de inicio del cuadrado junto
 setpixel: 
     // Recibe dos coordenadas y pinta el pixel con el color dado
     // PARAMETROS::  X:x1, Y:x2, COLOR:w10
-    sub sp,sp, 24
+    sub sp,sp, 32
     stur x1, [sp, 0]
     stur x2, [sp, 8]
     stur x3, [sp, 16]
+    stur lr, [sp, 24]
 
     coord:
         // x3 = Dirección de inicio + 4 * [x + (y * 640)]
@@ -51,7 +52,7 @@ setpixel:
         mul x3, x3, x2 // x3 =   640*y
         add x3, x3, x1 // x3 =  (640*y)+x
         lsl x3, x3, 2  // x3 = [(640*y)+x]*4
-        add x3, x3, x0 // x3 = [(640*y)+x]*4 + Direccion de inicio
+        add x3, x3, x20 // x3 = [(640*y)+x]*4 + Direccion de inicio
     //
 
     stur w10, [x3] // Colorea el pixel en la posicion calculada
@@ -59,7 +60,8 @@ setpixel:
     ldur x1, [sp, 0]
     ldur x2, [sp, 8]
     ldur x3, [sp, 16]
-    add sp,sp, 24
+    ldur lr, [sp, 24]
+    add sp,sp, 32
 ret // Recibe dos coordenadas y pinta el pixel con el color dado
 
 //-------------------------------------------------------------------------------------------
@@ -67,17 +69,18 @@ ret // Recibe dos coordenadas y pinta el pixel con el color dado
 pintarfondo:
     // Pinta el fondo con un color dado
     // PARAMETROS::  Color:x10 
-    sub sp, sp, 24
+    sub sp, sp, 32
     stur x1, [sp, 0]
     stur x2, [sp, 8]
-    stur x0, [sp, 16]
+    stur x20, [sp, 16]
+    stur lr, [sp, 24]
 
 	mov x2, SCREEN_HEIGH         // Y Size
     loop1:
         mov x1, SCREEN_WIDTH         // X Size
     loop0:
-        stur w10,[x0]  // Colorear el pixel N
-        add x0,x0,4    // Siguiente pixel
+        stur w10,[x20]  // Colorear el pixel N
+        add x20,x20,4    // Siguiente pixel
         sub x1,x1,1    // Decrementar contador X
         cbnz x1,loop0  // Si no terminó la fila, salto
         sub x2,x2,1    // Decrementar contador Y
@@ -85,8 +88,9 @@ pintarfondo:
 
     ldur x1, [sp, 0]
     ldur x2, [sp, 8]
-    ldur x0, [sp, 16]
-    add sp, sp, 24
+    ldur x20, [sp, 16]
+    ldur lr, [sp, 24]
+    add sp, sp, 32
 ret // Pinta el fondo con un color dado
 
 //-------------------------------------------------------------------------------------------
@@ -237,7 +241,7 @@ bomber:
 	ldur x4, [sp, 24]
 	ldur lr, [sp, 32]
     ldur x10, [sp, 40]
-	add sp,sp, 40
+	add sp,sp, 48
 ret // Literalmente Bomberman!
 
 .endif
