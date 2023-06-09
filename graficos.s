@@ -35,6 +35,125 @@ cuadrado:
 	add sp,sp, 40
 ret // Recibe dos coordenadas que seran la posicion de inicio del cuadrado junto con ancho y alto
 
+
+//----------------------------------------------------------------------------------------//
+circulo:
+    sub sp, sp, 56
+    stur x4, [sp, 0]
+    stur x5, [sp, 8]
+    stur x6, [sp, 16]
+    stur lr, [sp, 24]
+    stur x11, [sp, 32]
+    stur x12, [sp, 40]
+    stur x3, [sp,48]
+   
+	coord_circ:
+    	neg x4, x3 // error = -radio
+    	mov x5, x3 // x = radio
+    	mov x6, 0 // y = 0
+   
+	circ_loop:
+   	cmp x5,x6 // x>=y
+
+   	blt fin_circulo // si termino voy a fin_circulo
+
+		bl plot8points
+
+		add x4, x4, x6 // error + y
+		add x6,x6,1 // y++
+		add x4, x4, x6 // error + y
+
+		cmp x4,0 // error >= 0
+		blt if1 
+		sub x5,x5,1
+		sub x4,x4,x5
+		sub x4,x4,x5
+
+   if1:
+
+   b circ_loop
+
+   plot8points:
+      sub sp,sp,40
+      stur x11,[sp,0]
+      stur x12,[sp,8]
+      stur x5,[sp,16]
+      stur x6,[sp,24]
+      stur lr,[sp,32]
+
+      bl plot4points
+
+      cmp x5,x6
+      beq not_ifp8
+      mov x2,x5
+      mov x5,x6
+      mov x6,x2 // asignacion multiple
+      bl plot4points
+
+      not_ifp8:
+
+      ldr x11,[sp,0]
+      ldr x12,[sp,8]
+      ldr x5,[sp,16]
+      ldr x6,[sp,24]
+      ldr lr,[sp,32]
+      add sp,sp,40
+
+   ret
+
+   	plot4points:
+      
+			sub sp,sp, 24
+			stur x2,[sp,0]
+			stur x1,[sp,8]
+			stur lr,[sp,16]
+
+
+			add x1, x11, x5 // (cx+x) x1
+			add x2, x12, x6 // (cy+y) x2
+			bl setpixel // setp(cx+x,cy+y)
+			
+			cbz x5,notif1 // x!=0
+			sub x1, x11, x5 // (cx-x) x1
+			add x2, x12, x6 // (cy+y) x2
+			bl setpixel // setp(cx-x,cy+y)
+			
+			notif1:
+
+			cbz x6,notif2 // y!=0
+			add x1, x11, x5 // (cx+x) x1
+			sub x2, x12, x6 // (cx-x) x1
+			bl setpixel // setp(cx+x,cy-y)
+
+			notif2:
+
+			cbz x5,notif3
+			cbz x6,notif3 // x!=0 && y!=0
+			sub x1, x11, x5 // (cx-x) x1
+			sub x2, x12, x6 // (cy-y) x1
+			bl setpixel // setp(cx-x,cy-y)
+
+			notif3:
+
+			ldr x2,[sp,0]
+			ldr x1,[sp,8]
+			ldr lr,[sp,16]
+			add sp,sp, 24
+
+   	ret
+
+	fin_circulo:
+   ldur x4, [sp, 0]
+   ldur x5, [sp, 8]
+   ldur x6, [sp, 16]
+   ldur lr, [sp, 24]
+   ldur x11, [sp, 32]
+   ldur x12, [sp, 40]
+   ldur x3, [sp,48]
+   add sp, sp, 56
+   
+ret // Recibe (x11,x12) = (x,y) | x3 = radio 
+
 //-------------------------------------------------------------------------------------------
 
 setpixel: 
@@ -695,4 +814,69 @@ arbol:
     add sp, sp, 48
 ret // Un arbol tranqui
 
+bomba:
+		sub sp,sp,48
+		stur x10,[sp,0]
+		stur x17,[sp,8]
+		stur x18,[sp,16]
+		stur x19,[sp,24]
+		stur x3,[sp,32]
+		stur lr,[sp,40]
+		//negro//
+		movz x10,0x00,lsl 16
+		movk x10,0x0000,lsl 00
+		//unidad de rojo//
+		movz x17, 0x01, lsl 16
+		movk x17, 0x0000, lsl 00
+		//rojo//
+		movz x18, 0xFF, lsl 16
+		movk x18, 0x0000, lsl 00
+	bombinipadre:
+		mov x3, 30
+	bombini:
+		bl circulo
+		sub x3,x3,1
+		cbnz x3,bombini
+		//delay//
+		mov x19, 0xFFF
+		lsl x19,x19,12
+		delaybombi:
+		sub x19,x19,1
+		cbnz x19,delaybombi
+		//delay end//
+		add x10,x10,x17
+		cmp x18,x10
+		bgt bombinipadre	
+		//FFF000//
+		mov x17,0
+		movz x10, 0xFF, lsl 16
+		movk x10, 0xF000, lsl 00
+		mov x3, 1
+	ondaexpansiva:
+		bl circulo
+		//delay//
+		mov x19, 0xFFF
+		lsl x19,x19,10
+	delayexp:
+		sub x19,x19,1
+		cbnz x19,delayexp
+		//delayend//
+
+		add x17,x17,1
+		cmp x17,0xFF
+		bgt nosuma
+		add x10,x10,1
+		nosuma:
+		add x3,x3,1
+		cmp x3,0xA00 // radio
+		ble ondaexpansiva
+	
+		ldur x10,[sp,0]
+		ldur x17,[sp,8]
+		ldur x18,[sp,16]
+		ldur x19,[sp,24]
+		ldur x3,[sp,32]
+		ldur lr,[sp,40]
+		add sp,sp,48
+ret // bomba /
 .endif
