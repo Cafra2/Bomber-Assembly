@@ -7,25 +7,24 @@ main:
 	mov x20, x0 // Guarda la dirección base del framebuffer en x20
 	//-----------------------------------------------------------------
 	movz x10, 0x76, lsl 16
-	movk x10, 0xD14D, lsl 00
+	movk x10, 0xD14D, lsl 00 // Verde pasto #76D14D
 	bl pintarfondo
 	
-	movz x10, 0x00, lsl 16
-	movk x10, 0x0000, lsl 00
-	mov x1, 200
-	mov x2, 200
-	mov x3, 50
-	mov x4, 50
-	bl trianguloEQ
-	movz x10, 0x00, lsl 16
-	movk x10, 0x0000, lsl 00
-	mov x1, 200
-	mov x2, 200
-	mov x3, 50
-	mov x4, 10
-	bl trianguloEQ
-
 	
+
+	movz x10, 0x6C, lsl 16
+	movk x10, 0xEFF0, lsl 00 // Celeste cielo #6CEFF0
+	mov x1, 0
+	mov x2, 0
+	mov x3, 640
+	mov x4, 70
+	bl cuadrado
+
+	bl arbol	
+
+	mov x1, 200
+	mov x2, 200
+	bl bomber
 	// Ejemplo de uso de gpios
 	mov x9, GPIO_BASE
 
@@ -50,19 +49,37 @@ InfLoop:
 	
 	// Lee el estado de los GPIO 0 - 31
 	ldr w14, [x9, GPIO_GPLEV0]
-	eor x13, x13, x13
-	delay1:
-		add x13, x13, #1
-		cmp x13, x12
-		bne delay1
-    movz x10, 0x00, lsl 16
-	movk x10, 0x0000, lsl 00 //color del fondo
-	and w11, w14, 0b00000010
-	cbnz w11, bomber
-	// si w11 es 0 entonces el GPIO 1 estaba liberado
-	// de lo contrario será distinto de 0, (en este caso particular 2)
-	// significando que el GPIO 1 fue presionado
-	eor x13, x13, x13
+
+	// ---------- W -----------------------------------------------------
+	and w11, w14, 0b00000010 // Mascara para w en w11
+	cbz w11, end_w 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
+		bl pintarfondo
+		sub x2, x2, 5
+		bl bomber
+	end_w:
+	// ---------- A -----------------------------------------------------
+	and w11, w14, 0b00000100 // Mascara para a en w11
+	cbz w11, end_a 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
+		bl pintarfondo
+		sub x1, x1, 5
+		bl bomber
+	end_a:
+	// ---------- S -----------------------------------------------------
+	and w11, w14, 0b00001000 // Mascara para a en w11
+	cbz w11, end_s 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
+		bl pintarfondo
+		add x2, x2, 5
+		bl bomber
+	end_s:
+	// ---------- D -----------------------------------------------------
+	and w11, w14, 0b00010000 // Mascara para a en w11
+	cbz w11, end_d 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
+		bl pintarfondo
+		add x1, x1, 5
+		bl bomber
+	end_d:
+
+	eor x13, x13, x13 // Reseteo x13
 	delay2:
 		add x13, x13, #1
 		cmp x13, x12

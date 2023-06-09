@@ -463,4 +463,41 @@ bomber:
 	add sp,sp, 48
 ret // Literalmente Bomberman!
 
+arbol:
+    sub sp,sp, 48
+	stur x1, [sp, 0]
+    stur x2, [sp, 8]
+    stur x3, [sp, 16]
+	stur x4, [sp, 24]
+	stur lr, [sp, 32]
+    stur x10, [sp, 40]
+
+    // Hojas
+	movz x10, 0x00, lsl 16
+	movk x10, 0x8F12, lsl 00 // Verde arboles #008F12
+    add x1, x1, 24
+	add x2, x2, 16
+	mov x3, 64
+	mov x4, 80
+	bl cuadrado
+
+    // Tronco
+	movz x10, 0x4B, lsl 16
+	movk x10, 0x2900, lsl 00 // Marron troncos #4B2900
+    add x1, x1, 22
+	add x2, x2, 80
+	mov x3, 20
+	mov x4, 30
+	bl cuadrado
+
+    
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    ldur x3, [sp, 16]
+	ldur x4, [sp, 24]
+	ldur lr, [sp, 32]
+    ldur x10, [sp, 40]
+    add sp, sp, 48
+ret // Un arbol tranqui
+
 .endif
