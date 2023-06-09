@@ -93,6 +93,39 @@ pintarfondo:
     add sp, sp, 32
 ret // Pinta el fondo con un color dado
 
+background:
+    sub sp, sp, 48
+    stur x1, [sp, 0]
+    stur x2, [sp, 8]
+    stur x10, [sp, 16]
+    stur lr, [sp, 24]
+    stur x3, [sp, 32]
+    stur x4, [sp, 40]
+
+	movz x10, 0x76, lsl 16
+	movk x10, 0xD14D, lsl 00 // Verde pasto #76D14D
+	bl pintarfondo
+
+    movz x10, 0x6C, lsl 16
+	movk x10, 0xEFF0, lsl 00 // Celeste cielo #6CEFF0
+	mov x1, 0
+	mov x2, 0
+	mov x3, 640
+	mov x4, 70
+	bl cuadrado
+
+	bl arbol	
+
+
+    ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    ldur x10, [sp, 16]
+    ldur lr, [sp, 24]
+    ldur x3, [sp, 32]
+    ldur x4, [sp, 40]
+    add sp, sp, 48
+ret // Pinta el fondo con cualquier agregado
+
 linea:
     sub sp, sp, 80
     stur lr, [sp,0]
@@ -185,7 +218,7 @@ linea:
 
 ret // linea
 
-
+/* 
 trianguloEQ:
     // PARAMETROS:: x1:X, x2:Y, x3:Ancho, x4:Alto, x10:Color
     // Pinta un triangulo relleno
@@ -311,6 +344,7 @@ trianguloPint:
         ldur x5, [sp, 56]
         add sp, sp, 64
 ret
+*/
 
 //-------------------------------------------------------------------------------------------
 // Sprites
@@ -462,6 +496,167 @@ bomber:
     ldur x10, [sp, 40]
 	add sp,sp, 48
 ret // Literalmente Bomberman!
+
+bomberquemado:
+    sub sp,sp, 48
+	stur x1, [sp, 0]
+    stur x2, [sp, 8]
+    stur x3, [sp, 16]
+	stur x4, [sp, 24]
+	stur lr, [sp, 32]
+    stur x10, [sp, 40]
+
+    // Cabeza
+	movz x10, 0x9E, lsl 16
+	movk x10, 0x9E9E, lsl 00 // Blanco #9E9E9E
+    add x1, x1, 24
+	add x2, x2, 16
+	mov x3, 64
+	mov x4, 72
+	bl cuadrado
+	
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 8
+	add x2, x2, 24
+	mov x3, 16
+	mov x4, 56
+	bl cuadrado
+	
+	add x1, x1, 80
+	bl cuadrado
+
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 0
+	add x2, x2, 32
+	mov x3, 8
+	mov x4, 40
+	bl cuadrado
+
+	add x1, x1, 104
+	bl cuadrado
+
+	// Antena
+	movz x10, 0x6C, lsl 16
+	movk x10, 0x0013, lsl 00 // Rojo-Rosado #6C0013
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 48
+	add x2, x2, 0
+	mov x3, 16
+	mov x4, 16
+	bl cuadrado
+
+	// Manos
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 8
+	add x2, x2, 96
+	mov x3, 16
+	mov x4, 16
+	bl cuadrado
+
+	add x1, x1, 80
+	bl cuadrado
+
+	// Patas
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 16
+	add x2, x2, 128
+	mov x3, 32
+	mov x4, 16
+	bl cuadrado
+
+	add x1, x1, 48
+	bl cuadrado
+
+	// Cara
+	movz x10, 0x80, lsl 16
+	movk x10, 0x7068, lsl 00 // Piel #807068
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 16
+	add x2, x2, 32
+	mov x3, 80
+	mov x4, 40
+	bl cuadrado
+	
+	// Ojos
+    movz x10, 0xFF, lsl 16
+	movk x10, 0xFFFF, lsl 00 // Blanco #FFFFFF
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 24
+	add x2, x2, 40
+	mov x3, 24
+	mov x4, 24
+	bl cuadrado
+    add x1, x1, 40
+	bl cuadrado
+
+	movz x10, 0 // Negro #000000
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 32
+	add x2, x2, 48
+	mov x3, 8
+	mov x4, 8
+	bl cuadrado
+
+	add x1, x1, 40
+	bl cuadrado
+
+	// Cuerpo
+	movz x10, 0x21, lsl 16
+	movk x10, 0x2471, lsl 00 // Azul #212471
+	ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    add x1, x1, 32
+	add x2, x2, 88
+	mov x3, 48
+	mov x4, 40
+	bl cuadrado
+
+    ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+	add x1, x1, 24
+	add x2, x2, 96
+	mov x3, 8
+	mov x4, 24
+	bl cuadrado
+
+	add x1, x1, 56
+	bl cuadrado
+
+	// Cinturon
+	movz x10, 0 // Negro #000000
+    ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+	add x1, x1, 24
+	add x2, x2, 112
+	mov x3, 24
+	mov x4, 8
+	bl cuadrado
+
+	add x1, x1, 40
+	bl cuadrado
+
+	movz x10, 0xAF, lsl 16
+	movk x10, 0xA30E, lsl 00 // Dorado #AFA30E
+	sub x1, x1, 16
+	sub x3, x3, 8
+	bl cuadrado
+
+    ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    ldur x3, [sp, 16]
+	ldur x4, [sp, 24]
+	ldur lr, [sp, 32]
+    ldur x10, [sp, 40]
+	add sp,sp, 48
+ret // Literalmente Bomberman!(Pero quemado)
 
 arbol:
     sub sp,sp, 48
