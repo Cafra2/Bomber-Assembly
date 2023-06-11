@@ -16,6 +16,17 @@ main:
 	bl bomber
 	
 
+	mov x3, 50
+	mov x11, 400
+	mov x12, 100
+	bl circulo
+
+	mov x13,x11
+	mov x14,x12
+	
+
+	
+
 	// Ejemplo de uso de gpios
 	mov x9, GPIO_BASE
 
@@ -30,5 +41,8 @@ main:
 // w, a, s, d, espacio
 InfLoop:
 	bl movimiento
-	
+	bl ponerbomba
+
 	b InfLoop
+
+	

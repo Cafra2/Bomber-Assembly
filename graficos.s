@@ -75,12 +75,13 @@ circulo:
    b circ_loop
 
    plot8points:
-      sub sp,sp,40
+      sub sp,sp,48
       stur x11,[sp,0]
       stur x12,[sp,8]
       stur x5,[sp,16]
       stur x6,[sp,24]
       stur lr,[sp,32]
+		stur x2,[sp,40]
 
       bl plot4points
 
@@ -98,7 +99,8 @@ circulo:
       ldr x5,[sp,16]
       ldr x6,[sp,24]
       ldr lr,[sp,32]
-      add sp,sp,40
+		ldur x2,[sp,40]
+      add sp,sp,48
 
    ret
 
@@ -108,7 +110,7 @@ circulo:
 			stur x2,[sp,0]
 			stur x1,[sp,8]
 			stur lr,[sp,16]
-
+			
 
 			add x1, x11, x5 // (cx+x) x1
 			add x2, x12, x6 // (cy+y) x2
@@ -260,7 +262,7 @@ linea:
 	stur x14, [sp, 72]
 
 
-    // le paso x0,y0 y x9,y1 //
+    // le paso x0,y0 y x1,y1 //
 
     //x1,x2 (primer par) | x13,x14 (segundo par) //
 
@@ -338,134 +340,91 @@ linea:
 
 ret // linea
 
-/* 
-trianguloEQ:
-    // PARAMETROS:: x1:X, x2:Y, x3:Ancho, x4:Alto, x10:Color
-    // Pinta un triangulo relleno
-    sub sp, sp, 48
-    stur x1, [sp, 0]
-    stur x2, [sp, 8]
-    stur x3, [sp, 16]
-    stur x4, [sp, 24]
-    stur x13, [sp, 32]
-    stur x14, [sp, 40]
-	
-	// x1, x2, x e y iniciales
-	mov x13, x1
-    sub x14, x2, x4
-	bl linea
+triangulo_peri:
+   // PARAMETROS:: (x3,x4) esquina inf-izq 
+	//				  (x5,x6) esquina inf-der
+	//				  (x7,x8) esquina superior
+   sub sp, sp, 88
+   stur x1, [sp, 0]
+   stur x2, [sp, 8]
+   stur x3, [sp, 16]
+   stur x4, [sp, 24]
+   stur x5, [sp, 32]
+   stur x6, [sp, 40]
+   stur x7, [sp, 48]
+	stur x8, [sp, 56]
+	stur x13, [sp, 64]
+	stur x14, [sp, 72]
+	stur lr, [sp, 80]
 
-	mov x1, x13
-    mov x2, x14
-    ldur x13, [sp, 0]
-    add x13, x13, x3
-    ldur x14, [sp, 8]
+    //lado de izq->arriba// 
+
+	 mov x1, x3
+    mov x2, x4
+	 mov x13, x7
+	 mov x14, x8
     bl linea
     
-    mov x1, x13
-    mov x2, x14
-    ldur x13, [sp, 0]
-    ldur x14, [sp, 8]
+	 //lado de arriba->derecha//
+    mov x1, x5
+    mov x2, x6
+    mov x13, x7
+	 mov x14, x8
     bl linea
+    
+    //lado abajo izq -> abajo der//
+    mov x1, x3
+	 mov x2, x4
+	 mov x13, x5
+	 mov x14, x6
+    bl linea
+
 
     ldur x1, [sp, 0]
     ldur x2, [sp, 8]
     ldur x3, [sp, 16]
     ldur x4, [sp, 24]
-    ldur x13, [sp, 32]
-    ldur x14, [sp, 40]
-    add sp, sp, 48
-ret // Dibuja un triangulo EQ
+    ldur x5, [sp, 32]
+    ldur x6, [sp, 40]
+    ldur x7, [sp, 48]
+	 ldur x8, [sp, 56]
+	 ldur x13, [sp, 64]
+	 ldur x14, [sp, 72]
+	 ldur lr, [sp,80]
+    add sp, sp, 88
+ret
 
 triangulo:
-    // PARAMETROS:: x1:X, x2:Y, x3:MITAD del Ancho, x4:Alto, x10:Color
-    // Dibuja un triangulo. ATENCION: El ancho dado sera duplicado
-    sub sp, sp, 56
-    stur x1, [sp, 0]
-    stur x2, [sp, 8]
-    stur x3, [sp, 16]
-    stur x4, [sp, 24]
-    stur x13, [sp, 32]
-    stur x14, [sp, 40]
-    stur lr, [sp, 48]
+	sub sp,sp, 48
+	stur x3, [sp,0]
+	stur x4, [sp,8]
+	stur x5, [sp,16]
+	stur x6, [sp,24]
+	stur x9, [sp,32]
+	stur lr, [sp,40]
 
-    // x1, x2, x e y iniciales ----------------
-	mov x13, x1
-    sub x14, x2, x4
-	
+	bl triangulo_peri
+	sub x9,x5,x3
+	lsr x9,x9,1
+	lup:
+	add x3,x3,1 // izq +1
+	sub x4,x4,1 // arriba - 1
+	sub x5,x5,1 // der -1
+	sub x6,x6,1 // arriba - 1
+	bl triangulo_peri
+	sub x9,x9,1
+	cbnz x9,lup
 
-	mov x1, x13
-    mov x2, x14
-    ldur x13, [sp, 0]
-    add x13, x13, x3
-    ldur x14, [sp, 8]
-    bl linea
-    
-    mov x1, x13
-    mov x2, x14
-    ldur x13, [sp, 0]
-    ldur x14, [sp, 8]
-    bl linea
-    //------------------------------------------
-    ldur x1, [sp, 0]
-    ldur x2, [sp, 8]
-    ldur x3, [sp, 16]
-    ldur x4, [sp, 24]
 
-    // x1, x2, x e y iniciales ----------------
-    sub x13, x1, x3
-    mov x14, x2
-    bl linea
+	ldur x3, [sp,0]
+	ldur x4, [sp,8]
+	ldur x5, [sp,16]
+	ldur x6, [sp,24]
+	ldur x9, [sp,32]
+	ldur lr, [sp,40]
+	add sp,sp,48
 
-    mov x1, x13
-    mov x2, x14
-    ldur x13, [sp, 0]
-    ldur x14, [sp, 8]
-    sub x14, x14, x4
-    bl linea
-
-    ldur x1, [sp, 0]
-    ldur x2, [sp, 8]
-    ldur x3, [sp, 16]
-    ldur x4, [sp, 24]
-    ldur x13, [sp, 32]
-    ldur x14, [sp, 40]
-    add sp, sp, 48
 ret
-
-trianguloPint:
-    // PARAMETROS:: x1:X, x2:Y, x3:MITAD del Ancho, x4:Alto, x10:Color
-    // Dibuja un triangulo. ATENCION: El ancho dado sera duplicado
-    sub sp, sp, 64
-    stur x1, [sp, 0]
-    stur x2, [sp, 8]
-    stur x3, [sp, 16]
-    stur x4, [sp, 24]
-    stur x13, [sp, 32]
-    stur x14, [sp, 40]
-    stur lr, [sp, 48]
-    stur x5, [sp, 56]
-
-    loop_triangulopint:
-        cbz x4, end_triangulopint
-        bl triangulo
-        sub x4, x4, 1
-
-    b loop_triangulopint
-
-    end_triangulopint:
-        ldur x1, [sp, 0]
-        ldur x2, [sp, 8]
-        ldur x3, [sp, 16]
-        ldur x4, [sp, 24]
-        ldur x13, [sp, 32]
-        ldur x14, [sp, 40]
-        ldur lr, [sp, 48]
-        ldur x5, [sp, 56]
-        add sp, sp, 64
-ret
-*/
-
 //-------------------------------------------------------------------------------------------
 // Sprites
 bomber:
@@ -831,23 +790,23 @@ bomba:
 		//rojo//
 		movz x18, 0xFF, lsl 16
 		movk x18, 0x0000, lsl 00
-	bombinipadre:
+	radiobomba:
 		mov x3, 30
 	bombini:
 		bl circulo
 		sub x3,x3,1
 		cbnz x3,bombini
 		//delay//
-		mov x19, 0xFFF
-		lsl x19,x19,12
+		mov x19, DELAY
+		lsl x19,x19,CUENTAREG
 		delaybombi:
 		sub x19,x19,1
 		cbnz x19,delaybombi
-        bl movimiento
+      bl movimiento
 		//delay end//
 		add x10,x10,x17
 		cmp x18,x10
-		bgt bombinipadre	
+		bgt radiobomba	
 		//FFF000//
 		mov x17,0
 		movz x10, 0xFF, lsl 16
@@ -856,8 +815,8 @@ bomba:
 	ondaexpansiva:
 		bl circulo
 		//delay//
-		mov x19, 0xFFF
-		lsl x19,x19,10
+		mov x19, DELAY
+		lsl x19,x19,ONDEXPAN
 	delayexp:
 		sub x19,x19,1
         
@@ -870,9 +829,10 @@ bomba:
 		add x10,x10,1
 		nosuma:
 		add x3,x3,1
-		cmp x3,0xA00 // radio
+		cmp x3,HUMO // radio
 		ble ondaexpansiva
-        bl bomberquemado
+      bl background
+		bl bomberquemado
 	
 		ldur x10,[sp,0]
 		ldur x17,[sp,8]
@@ -881,6 +841,6 @@ bomba:
 		ldur x3,[sp,32]
 		ldur lr,[sp,40]
 		add sp,sp,48
-ret // bomba /
+ret // bomba //
 
 .endif
