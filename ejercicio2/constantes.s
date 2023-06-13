@@ -9,12 +9,11 @@
 .equ GPIO_BASE,    0x3f200000
 .equ GPIO_GPFSEL0, 0x00
 .equ GPIO_GPLEV0,  0x34
-//----------------DELAY----------------------------------------------------------
-.equ DELAY, 0xAA
-.equ CUENTAREG, 11 // para lsl
-.equ ONDEXPAN, 13 
-.equ HUMO, 900 //
-.equ TECLAD, 12 
+.equ DELAY, 0xFFF// delay base
+.equ CUENTAREG, 1 // para lsl
+.equ ONDEXPAN, 5 // delay de onda expansiva
+.equ HUMO, 1000 // radio del humo
+.equ TECLAD, 6 // delay de la tecla
 //---------------------------------------------------------------------------------
 
 .endif

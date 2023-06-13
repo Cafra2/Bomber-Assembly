@@ -9,23 +9,11 @@ main:
 	//-----------------------------------------------------------------
 	
 
-	bl background
+	bl background // Imprime el fondo
 	
-	mov x1, 200
-	mov x2, 200
-	bl bomber
-	
-
-	mov x3, 50
-	mov x11, 400
-	mov x12, 100
-	bl circulo
-
-	mov x13,x11
-	mov x14,x12
-	
-
-	
+	mov x1, 200 // x1 es la coordenada x del personaje
+	mov x2, 200 // x2 es la coordenada y del personaje
+	bl bomber // imprime al personaje
 
 	// Ejemplo de uso de gpios
 	mov x9, GPIO_BASE
@@ -35,13 +23,11 @@ main:
 
 	// Setea gpios 0 - 9 como lectura
 	str wzr, [x9, GPIO_GPFSEL0]
-	ldr x12, =0x800000
-
 
 // w, a, s, d, espacio
 InfLoop:
-	bl movimiento
-	bl ponerbomba
+	bl movimiento // checkea si se esta apretando w,a,s,d para mover el personaje
+	bl ponerbomba // checkea si se esta apretando el espacio para poner la bomba
 
 	b InfLoop
 
