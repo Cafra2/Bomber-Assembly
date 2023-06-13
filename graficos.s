@@ -39,6 +39,7 @@ ret // Recibe dos coordenadas que seran la posicion de inicio del cuadrado junto
 
 //----------------------------------------------------------------------------------------//
 circulo:
+	// x3 = radio
     sub sp, sp, 56
     stur x4, [sp, 0]
     stur x5, [sp, 8]
@@ -215,7 +216,7 @@ pintarfondo:
     add sp, sp, 32
 ret // Pinta el fondo con un color dado
 
-background:
+backdia:
     sub sp, sp, 48
     stur x1, [sp, 0]
     stur x2, [sp, 8]
@@ -236,7 +237,54 @@ background:
 	mov x4, 100
 	bl cuadrado
 
-	bl arbol	
+	mov x3, 100
+	mov x4, 120
+	mov x5, 200
+	mov x6, 120
+	mov x7, 150
+	mov x8, 40
+	bl arbol
+	bl sol
+
+
+    ldur x1, [sp, 0]
+    ldur x2, [sp, 8]
+    ldur x10, [sp, 16]
+    ldur lr, [sp, 24]
+    ldur x3, [sp, 32]
+    ldur x4, [sp, 40]
+    add sp, sp, 48
+ret // Pinta el fondo de dia
+
+backnoche:
+    sub sp, sp, 48
+    stur x1, [sp, 0]
+    stur x2, [sp, 8]
+    stur x10, [sp, 16]
+    stur lr, [sp, 24]
+    stur x3, [sp, 32]
+    stur x4, [sp, 40]
+
+	movz x10, 0x5B, lsl 16
+	movk x10, 0xA13B, lsl 00 // Verde pasto oscuro #5
+	bl pintarfondo
+
+    movz x10, 0x3D, lsl 16
+	movk x10, 0x4C5E, lsl 00 // azul noche 0x3D4C5E
+	mov x1, 0
+	mov x2, 0
+	mov x3, 640
+	mov x4, 100
+	bl cuadrado
+	mov x3, 100
+	mov x4, 120
+	mov x5, 200
+	mov x6, 120
+	mov x7, 150
+	mov x8, 40
+	bl arbol
+	bl luna
+	
 
 
     ldur x1, [sp, 0]
@@ -247,6 +295,7 @@ background:
     ldur x4, [sp, 40]
     add sp, sp, 48
 ret // Pinta el fondo con cualquier agregado
+
 
 linea:
     sub sp, sp, 80
@@ -737,40 +786,51 @@ bomberquemado:
 	add sp,sp, 48
 ret // Literalmente Bomberman!(Pero quemado)
 
+
+		
 arbol:
-    sub sp,sp, 48
-	stur x1, [sp, 0]
-    stur x2, [sp, 8]
+    sub sp,sp, 72
+	stur x8, [sp, 0]
+    stur x7, [sp, 8]
     stur x3, [sp, 16]
 	stur x4, [sp, 24]
 	stur lr, [sp, 32]
     stur x10, [sp, 40]
+    stur x9, [sp, 48]
+    stur x5, [sp, 56]
+    stur x6, [sp, 64]
 
-    // Tronco
+    //hojas arbolas
+    movz x10, 0x00, lsl 16
+	movk x10, 0x8F12, lsl 00 // Verde arboles #008F1
+    bl triangulo
+	sub x9, x5, x3 //distancia entre x5 y x3
+	lsr x9, x9, 3 // divido la distancia por 8
+
+	//tronco
 	movz x10, 0x4B, lsl 16
 	movk x10, 0x2900, lsl 00 // Marron troncos #4B2900
-    add x1, x1, 22
-	add x2, x2, 80
-	mov x3, 60
-	mov x4, 30
-	bl cuadrado
+	add x1, x3, x9
+	add x1, x1, x9
+	add x1, x1, x9 // x1 = x3+ 3*x9
+	mov x2, x4 // x2 = y original del triangulo
+	lsl x9, x9, 1
+	mov x3, x9
+	sub x4, x6, x8
+	lsr x4, x4, 1
 
-    // Hojas
-	movz x10, 0x00, lsl 16
-	movk x10, 0x8F12, lsl 00 // Verde arboles #008F12
-    add x1, x1, 24
-	add x2, x2, 16
-	mov x3, 94
-	mov x4, 80
 	bl cuadrado
     
-	ldur x1, [sp, 0]
-    ldur x2, [sp, 8]
+	ldur x8, [sp, 0]
+    ldur x7, [sp, 8]
     ldur x3, [sp, 16]
 	ldur x4, [sp, 24]
 	ldur lr, [sp, 32]
     ldur x10, [sp, 40]
-    add sp, sp, 48
+    ldur x9, [sp, 48]
+    ldur x5, [sp, 56]
+    ldur x6, [sp, 64]
+    add sp, sp, 72
 ret // Un arbol tranqui
 
 bomba:
@@ -831,7 +891,7 @@ bomba:
 		add x3,x3,1
 		cmp x3,HUMO // radio
 		ble ondaexpansiva
-      bl background
+      bl backdia
 		bl bomberquemado
 	
 		ldur x10,[sp,0]
@@ -843,4 +903,106 @@ bomba:
 		add sp,sp,48
 ret // bomba //
 
+sol:
+	//sol fijo
+	sub sp, sp, 72
+    stur x3, [sp, 0]
+    stur x11, [sp, 8]
+    stur x12, [sp, 16]
+    stur x10, [sp, 24]
+    stur lr, [sp, 32]
+    stur x1, [sp, 40]
+    stur x2, [sp, 48]
+    stur x13, [sp, 56]
+    stur x14, [sp, 64]
+    
+
+	mov x3, 25
+	mov x11, 450
+	mov x12, 50
+	movz x10, 0xFF, lsl 16
+	movk x10, 0xB900, lsl 0
+	mov x17, 25
+	mov x1, x11
+	sub x1, x1, x17
+	mov x2, x12
+	add x2, x2, x17
+	mov x13, x11
+	add x13, x13, x17
+	mov x14, x12
+	sub x14, x14, x17
+	bl linea
+
+	sub x1, x1, 15
+	sub x2, x2, x17
+	add x13, x13, 15
+	add x14, x14, x17
+
+	bl linea
+
+	add x1, x1, 15
+	sub x2, x2, x17
+	sub x13, x13, 15
+	add x14, x14, x17
+	bl linea
+
+	add x1, x1, x17
+	sub x2, x2, 15
+	sub x13, x13, x17
+	add x14, x14, 15
+	bl linea
+	
+	mov x3, 25
+	mov x11, 450
+	mov x12, 50
+	sol_loop: 
+		bl circulo
+		sub x3,x3,1
+		add x10, x10, 0x0200
+	cbnz x3,sol_loop
+	
+
+    ldur x3, [sp, 0]
+    ldur x11, [sp, 8]
+    ldur x12, [sp, 16]
+    ldur x10, [sp, 24]
+    ldur lr, [sp, 32]
+    ldur x1, [sp, 40]
+    ldur x2, [sp, 48]
+    ldur x13, [sp, 56]
+    ldur x14, [sp, 64]
+    add sp, sp, 72
+ret //sol
+
+luna:
+	//luna fija
+	sub sp, sp, 48
+    stur x3, [sp, 0]
+    stur x11, [sp, 8]
+    stur x12, [sp, 16]
+    stur x10, [sp, 24]
+    stur x17, [sp, 32]
+    stur lr, [sp, 40]
+    
+	mov x3, 25
+	mov x11, 450
+	mov x12, 50
+	movz x10, 0xFE, lsl 16
+	movk x10, 0xFDED, lsl 0
+	mov x17, 25
+	luna_loop: 
+		bl circulo
+		sub x3,x3,1
+		sub x10, x10, 0x0101
+	cbnz x3,luna_loop
+	
+
+    ldur x3, [sp, 0]
+    ldur x11, [sp, 8]
+    ldur x12, [sp, 16]
+    ldur x10, [sp, 24]
+    ldur x17, [sp, 32]
+    ldur lr, [sp, 40]
+    add sp, sp, 48
+    ret
 .endif

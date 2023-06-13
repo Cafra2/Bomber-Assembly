@@ -18,31 +18,26 @@ movimiento:
 	// ---------- W -----------------------------------------------------
 	and w11, w14, 0b00000010 // Mascara para w en w11
 	cbz w11, end_w 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
-		cmp x2, -5
         ble end_w 
-        bl background
-		sub x2, x2, 5
+        bl backdia
 		bl bomber
 	end_w:
 	// ---------- A -----------------------------------------------------
 	and w11, w14, 0b00000100 // Mascara para a en w11
 	cbz w11, end_a 		// Si a fue presionada, imprime a bomber 1 pixel hacia la izquierda
-		bl background
-		sub x1, x1, 5
+		bl backnoche
 		bl bomber
 	end_a:
 	// ---------- S -----------------------------------------------------
 	and w11, w14, 0b00001000 // Mascara para s en w11
 	cbz w11, end_s 		// Si s fue presionada, imprime a bomber 1 pixel hacia abajo
-		bl background
-		add x2, x2, 5
+		bl backdia
 		bl bomber
 	end_s:
 	// ---------- D -----------------------------------------------------
 	and w11, w14, 0b00010000 // Mascara para d en w11
 	cbz w11, end_d 		// Si d fue presionada, imprime a bomber 1 pixel hacia la derecha
-		bl background
-		add x1, x1, 5
+		bl backdia
 		bl bomber
 	end_d:
 
@@ -81,7 +76,7 @@ ponerbomba:
 	// ---------- ESPACIO -----------------------------------------------------
 	and w11, w14, 0b00100000 // Mascara para espacio en w11
 	cbz w11, end_espacio 		// Si espacio fue presionado, deja bomba
-		bl background
+		bl backdia
         add x11, x1, 60
         add x12, x2, 120
         bl bomber

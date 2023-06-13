@@ -8,24 +8,11 @@ main:
 	mov x20, x0 // Guarda la dirección base del framebuffer en x20
 	//-----------------------------------------------------------------
 	
-
-	bl background
 	
 	mov x1, 200
 	mov x2, 200
+	bl backdia
 	bl bomber
-	
-
-	mov x3, 50
-	mov x11, 400
-	mov x12, 100
-	bl circulo
-
-	mov x13,x11
-	mov x14,x12
-	
-
-	
 
 	// Ejemplo de uso de gpios
 	mov x9, GPIO_BASE
