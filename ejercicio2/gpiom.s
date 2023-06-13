@@ -4,12 +4,11 @@
 .include "graficos.s"
 
 movimiento:
-    sub sp, sp, 40
+    sub sp, sp, 32
     stur x14, [sp, 0]
     stur x11, [sp, 8]
-    stur x12, [sp, 16]
-    stur x13, [sp, 24]
-    stur lr, [sp, 32]
+    stur x19, [sp, 16]
+    stur lr, [sp, 24]
 
 
     // Lee el estado de los GPIO 0 - 31
@@ -47,7 +46,7 @@ movimiento:
 	end_d:
 
 	
-	mov x19,0XFFF
+	mov x19,DELAY
 	lsl x19,x19,12
    delayteclil:
 	sub x19,x19,1
@@ -56,10 +55,9 @@ movimiento:
     
     ldur x14, [sp, 0]
     ldur x11, [sp, 8]
-    ldur x12, [sp, 16]
-    ldur x13, [sp, 24]
-    ldur lr, [sp, 32]
-    add sp, sp, 40
+    ldur x19, [sp, 16]
+    ldur lr, [sp, 24]
+    add sp, sp, 32
 ret
 
 
@@ -68,9 +66,9 @@ ponerbomba:
     sub sp, sp, 40
     stur x14, [sp, 0]
     stur x11, [sp, 8]
-    stur x12, [sp, 16]
-    stur x13, [sp, 24]
-    stur lr, [sp, 32]
+    stur x19, [sp, 16]
+    stur lr, [sp, 24]
+	 stur x12, [sp, 32]
 
 
     // Lee el estado de los GPIO 0 - 31
@@ -90,7 +88,7 @@ ponerbomba:
 	end_espacio:
 
 	
-	mov x19,0XFFF
+	mov x19,DELAY
 	lsl x19,x19,12
    delayteclil2:
 	sub x19,x19,1
@@ -99,9 +97,9 @@ ponerbomba:
     
     ldur x14, [sp, 0]
     ldur x11, [sp, 8]
-    ldur x12, [sp, 16]
-    ldur x13, [sp, 24]
-    ldur lr, [sp, 32]
+    ldur x19, [sp, 16]
+    ldur lr, [sp, 24]
+	 ldur x12, [sp, 32]
     add sp, sp, 40
 ret
 

@@ -39,6 +39,7 @@ ret // Recibe dos coordenadas que seran la posicion de inicio del cuadrado junto
 
 //----------------------------------------------------------------------------------------//
 circulo:
+	// x3 = radio
     sub sp, sp, 56
     stur x4, [sp, 0]
     stur x5, [sp, 8]
@@ -236,8 +237,77 @@ background:
 	mov x4, 100
 	bl cuadrado
 
-	bl arbol	
+	mov x3, 200
+	mov x4, 95
+	mov x5, 225
+	mov x6, 95
+	mov x7, 210
+	mov x8, 80
+	bl arbol2
 
+	mov x3, 221
+	mov x4, 95
+	mov x5, 246
+	mov x6, 95
+	mov x7, 233
+	mov x8, 80
+	bl arbol2
+	
+	
+	mov x3, 0
+	mov x4, 90
+	mov x5, 70
+	mov x6, 90
+	mov x7, 35
+	mov x8, 40
+	bl arbol2
+	
+	
+	mov x3, 120
+	mov x4, 90
+	mov x5, 180
+	mov x6, 90
+	mov x7, 150
+	mov x8, 40
+	bl arbol2
+
+
+	mov x3, 50
+	mov x4, 85
+	mov x5, 150
+	mov x6, 85
+	mov x7, 100
+	mov x8, 0
+	bl arbol
+
+	bl sol
+
+	mov x3, 400
+	mov x4, 89
+	mov x5, 440
+	mov x6, 89
+	mov x7, 420
+	mov x8, 52
+	bl arbol
+	
+	mov x3, 500
+	mov x4, 85
+	mov x5, 550
+	mov x6, 85
+	mov x7, 525
+	mov x8, 30
+	bl arbol
+
+	mov x3, 530
+	mov x4, 80
+	mov x5, 630
+	mov x6, 80
+	mov x7, 580
+	mov x8, 0
+	bl arbol2
+
+
+	
 
     ldur x1, [sp, 0]
     ldur x2, [sp, 8]
@@ -736,41 +806,95 @@ bomberquemado:
     ldur x10, [sp, 40]
 	add sp,sp, 48
 ret // Literalmente Bomberman!(Pero quemado)
-
+		
 arbol:
-    sub sp,sp, 48
-	stur x1, [sp, 0]
-    stur x2, [sp, 8]
+    sub sp,sp, 72
+	stur x8, [sp, 0]
+    stur x7, [sp, 8]
     stur x3, [sp, 16]
 	stur x4, [sp, 24]
 	stur lr, [sp, 32]
     stur x10, [sp, 40]
+    stur x9, [sp, 48]
+    stur x5, [sp, 56]
+    stur x6, [sp, 64]
 
-    // Tronco
+    //hojas arbolas
+    movz x10, 0x00, lsl 16
+	movk x10, 0x8F12, lsl 00 // Verde arboles #008F1
+    bl triangulo
+	sub x9, x5, x3 //distancia entre x5 y x3
+	lsr x9, x9, 3 // divido la distancia por 8
+
+	//tronco
 	movz x10, 0x4B, lsl 16
 	movk x10, 0x2900, lsl 00 // Marron troncos #4B2900
-    add x1, x1, 22
-	add x2, x2, 80
-	mov x3, 60
-	mov x4, 30
-	bl cuadrado
+	add x1, x3, x9
+	add x1, x1, x9
+	add x1, x1, x9 // x1 = x3+ 3*x9
+	mov x2, x4 // x2 = y original del triangulo
+	lsl x9, x9, 1
+	mov x3, x9
+	sub x4, x6, x8
+	lsr x4, x4, 1
 
-    // Hojas
-	movz x10, 0x00, lsl 16
-	movk x10, 0x8F12, lsl 00 // Verde arboles #008F12
-    add x1, x1, 24
-	add x2, x2, 16
-	mov x3, 94
-	mov x4, 80
 	bl cuadrado
     
-	ldur x1, [sp, 0]
-    ldur x2, [sp, 8]
+	ldur x8, [sp, 0]
+    ldur x7, [sp, 8]
     ldur x3, [sp, 16]
 	ldur x4, [sp, 24]
 	ldur lr, [sp, 32]
     ldur x10, [sp, 40]
-    add sp, sp, 48
+    ldur x9, [sp, 48]
+    ldur x5, [sp, 56]
+    ldur x6, [sp, 64]
+    add sp, sp, 72
+ret // Un arbol tranqui
+
+arbol2:
+    sub sp,sp, 72
+	stur x8, [sp, 0]
+    stur x7, [sp, 8]
+    stur x3, [sp, 16]
+	stur x4, [sp, 24]
+	stur lr, [sp, 32]
+    stur x10, [sp, 40]
+    stur x9, [sp, 48]
+    stur x5, [sp, 56]
+    stur x6, [sp, 64]
+
+    //hojas arbolas
+    movz x10, 0x11, lsl 16
+	movk x10, 0x5107, lsl 00 // Verde arboles #008F1
+    bl triangulo
+	sub x9, x5, x3 //distancia entre x5 y x3
+	lsr x9, x9, 3 // divido la distancia por 8
+
+	//tronco
+	movz x10, 0x4B, lsl 16
+	movk x10, 0x2900, lsl 00 // Marron troncos #4B2900
+	add x1, x3, x9
+	add x1, x1, x9
+	add x1, x1, x9 // x1 = x3+ 3*x9
+	mov x2, x4 // x2 = y original del triangulo
+	lsl x9, x9, 1
+	mov x3, x9
+	sub x4, x6, x8
+	lsr x4, x4, 1
+
+	bl cuadrado
+    
+	ldur x8, [sp, 0]
+    ldur x7, [sp, 8]
+    ldur x3, [sp, 16]
+	ldur x4, [sp, 24]
+	ldur lr, [sp, 32]
+    ldur x10, [sp, 40]
+    ldur x9, [sp, 48]
+    ldur x5, [sp, 56]
+    ldur x6, [sp, 64]
+    add sp, sp, 72
 ret // Un arbol tranqui
 
 bomba:
@@ -829,7 +953,7 @@ bomba:
 		add x10,x10,1
 		nosuma:
 		add x3,x3,1
-		cmp x3,HUMO // radio
+		cmp x3,HUMO // radiodelHUMO
 		ble ondaexpansiva
       bl background
 		bl bomberquemado
@@ -842,5 +966,79 @@ bomba:
 		ldur lr,[sp,40]
 		add sp,sp,48
 ret // bomba //
+
+sol:
+	//sol fijo
+	sub sp, sp, 80
+    stur x3, [sp, 0]
+    stur x11, [sp, 8]
+    stur x12, [sp, 16]
+    stur x10, [sp, 24]
+    stur lr, [sp, 32]
+    stur x1, [sp, 40]
+    stur x2, [sp, 48]
+    stur x13, [sp, 56]
+    stur x14, [sp, 64]
+	 stur x17, [sp, 72]
+    
+
+	mov x3, 25
+	mov x11, 450
+	mov x12, 50
+	movz x10, 0xFF, lsl 16
+	movk x10, 0xB900, lsl 0
+	mov x17, 25
+	mov x1, x11
+	sub x1, x1, x17
+	mov x2, x12
+	add x2, x2, x17
+	mov x13, x11
+	add x13, x13, x17
+	mov x14, x12
+	sub x14, x14, x17
+	bl linea
+
+	sub x1, x1, 15
+	sub x2, x2, x17
+	add x13, x13, 15
+	add x14, x14, x17
+
+	bl linea
+
+	add x1, x1, 15
+	sub x2, x2, x17
+	sub x13, x13, 15
+	add x14, x14, x17
+	bl linea
+
+	add x1, x1, x17
+	sub x2, x2, 15
+	sub x13, x13, x17
+	add x14, x14, 15
+	bl linea
+	
+	mov x3, 25
+	mov x11, 450
+	mov x12, 50
+	sol_loop: 
+		bl circulo
+		sub x3,x3,1
+		add x10, x10, 0x0200
+	cbnz x3,sol_loop
+	
+
+    ldur x3, [sp, 0]
+    ldur x11, [sp, 8]
+    ldur x12, [sp, 16]
+    ldur x10, [sp, 24]
+    ldur lr, [sp, 32]
+    ldur x1, [sp, 40]
+    ldur x2, [sp, 48]
+    ldur x13, [sp, 56]
+    ldur x14, [sp, 64]
+	 ldur x17, [sp, 72]
+    add sp, sp, 80
+ret //sol
+
 
 .endif
