@@ -272,8 +272,8 @@ backnoche:
     stur x3, [sp, 32]
     stur x4, [sp, 40]
 
-	movz x10, 0x5B, lsl 16
-	movk x10, 0xA13B, lsl 00 // Verde pasto oscuro #5
+	movz x10, 0x26, lsl 16
+	movk x10, 0x7F40, lsl 00 // Verde pasto oscuro #5
 	bl pintarfondo
 
     movz x10, 0x3D, lsl 16
@@ -290,6 +290,15 @@ backnoche:
 	mov x7, 150
 	mov x8, 40
 	bl arbol
+
+	add x3, x3, 100
+	add x4, x4, 120
+	add x5, x5, 200
+	add x6, x6, 120
+	add x7, x7, 150
+	add x8, x8, 40
+	bl arbol
+
 	bl luna
 	
 

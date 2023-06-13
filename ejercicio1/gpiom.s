@@ -18,14 +18,13 @@ movimiento:
 	// ---------- W -----------------------------------------------------
 	and w11, w14, 0b00000010 // Mascara para w en w11
 	cbz w11, end_w 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
-        ble end_w 
         bl backdia
 		bl bomber
 	end_w:
 	// ---------- A -----------------------------------------------------
 	and w11, w14, 0b00000100 // Mascara para a en w11
 	cbz w11, end_a 		// Si a fue presionada, imprime a bomber 1 pixel hacia la izquierda
-		bl backnoche
+		bl backdia
 		bl bomber
 	end_a:
 	// ---------- S -----------------------------------------------------
@@ -98,14 +97,55 @@ ponerbomba:
     add sp, sp, 40
 ret
 
-cambiafondos:
+cambiafondosWS:
     sub sp, sp, 32
     stur x14, [sp, 0]
     stur x11, [sp, 8]
     stur x19, [sp, 16]
     stur lr, [sp, 24]
 
+    // Lee el estado de los GPIO 0 - 31
+	ldr w14, [x9, GPIO_GPLEV0]
+	mov w11,wzr
+	// ---------- W -----------------------------------------------------
+	and w11, w14, 0b00000010 // Mascara para w en w11
+	cbz w11, end_wfondo 		// Si w fue presionada, imprime a bomber 1 pixel hacia arriba
+        bl backdia
+		bl bomber
+	end_wfondo:
+	// ---------- S -----------------------------------------------------
+	and w11, w14, 0b00001000 // Mascara para s en w11
+	cbz w11, end_sfondo 		// Si s fue presionada, imprime a bomber 1 pixel hacia abajo
+		bl backnoche
+		bl bomber
+	end_sfondo:
 
+    
+
+    /* 
+    mov x19,DELAY
+    lsl x19,x19,DELAYCMBF
+   delayfondos:
+    sub x19,x19,1
+    cbnz x19,delayfondos
+    */
+
+   ldur x14, [sp, 0]
+   ldur x11, [sp, 8]
+   ldur x19, [sp, 16]
+   ldur lr, [sp, 24]
+   add sp, sp, 32
+
+ret
+
+cambiafondosESPACIO:
+    sub sp, sp, 32
+    stur x14, [sp, 0]
+    stur x11, [sp, 8]
+    stur x19, [sp, 16]
+    stur lr, [sp, 24]
+
+    cambioloop:
     // Lee el estado de los GPIO 0 - 31
     ldr w14, [x9, GPIO_GPLEV0]
     mov w11,wzr
@@ -114,6 +154,9 @@ cambiafondos:
     // ---------- ESPACIO -----------------------------------------------------
     cambiadia:
     and w11, w14, 0b00100000 // Mascara para espacio en w11
+    cbnz w11, cambioloop
+    ldr w14, [x9, GPIO_GPLEV0]
+    and w11, w14, 0b00100000 // Mascara para espacio en w11
     cbz w11, end_cd        // Si espacio fue presionado, cambia fondo
         bl backdia
         bl bomber
@@ -121,13 +164,19 @@ cambiafondos:
         b fin
     end_cd:
 
-    mov x19,0XFFF
+    /* 
+    mov x19,DELAY
     lsl x19,x19,DELAYCMBF
     delayfondos2:
     sub x19,x19,1
     cbnz x19,delayfondos2
-
+    */
+    cambioloop1:
+    ldr w14, [x9, GPIO_GPLEV0]
     cambianoche:
+    and w11, w14, 0b00100000 // Mascara para espacio en w11
+    cbnz w11, cambioloop1
+    ldr w14, [x9, GPIO_GPLEV0]
     and w11, w14, 0b00100000 // Mascara para espacio en w11
     cbz w11, end_cn        // Si espacio fue presionado, cambia fondo
         bl backnoche 
@@ -135,19 +184,23 @@ cambiafondos:
         mov x15,1
     end_cn:
 
-    mov x19,0XFFF
+    /* 
+    mov x19,DELAY
     lsl x19,x19,DELAYCMBF
    delayfondos:
     sub x19,x19,1
     cbnz x19,delayfondos
-
+    */
 
     fin:
-    mov x19,0XFFF
+    
+    /* 
+    mov x19,DELAY
     lsl x19,x19,DELAYCMBF
     delayfondos3:
     sub x19,x19,1
     cbnz x19,delayfondos3
+    */
 
    ldur x14, [sp, 0]
    ldur x11, [sp, 8]

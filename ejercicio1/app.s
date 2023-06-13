@@ -28,7 +28,7 @@ main:
 	mov x15, 0
 // w, a, s, d, espacio
 InfLoop:
-	bl cambiafondos
+	bl cambiafondosWS
 
 	b InfLoop
 

@@ -14,7 +14,7 @@
 .equ ONDEXPAN, 13 
 .equ HUMO, 900 //
 .equ TECLAD, 12
-.equ DELAYCMBF, 12 
+.equ DELAYCMBF, 1
 //---------------------------------------------------------------------------------
 
 .endif
