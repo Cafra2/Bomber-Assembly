@@ -312,7 +312,6 @@ backnoche:
     add sp, sp, 48
 ret // Pinta el fondo con cualquier agregado
 
-
 linea:
     sub sp, sp, 80
     stur lr, [sp,0]
@@ -327,7 +326,7 @@ linea:
 	stur x14, [sp, 72]
 
 
-    // le paso x0,y0 y x1,y1 //
+    // Le paso x0,y0 y x1,y1 //
 
     //x1,x2 (primer par) | x13,x14 (segundo par) //
 
@@ -403,7 +402,7 @@ linea:
 		ldur x14, [sp, 72]
         add sp, sp ,80
 
-ret // linea
+ret // Linea
 
 triangulo_peri:
    // PARAMETROS:: (x3,x4) esquina inf-izq 
@@ -915,7 +914,7 @@ bomba:
 		ldur x3,[sp,32]
 		ldur lr,[sp,40]
 		add sp,sp,48
-ret // bomba //
+ret // Bomba //
 
 sol:
 	//sol fijo
@@ -986,10 +985,10 @@ sol:
     ldur x13, [sp, 56]
     ldur x14, [sp, 64]
     add sp, sp, 72
-ret //sol
+ret //Sol
 
 luna:
-	//luna fija
+	//Luna fija
 	sub sp, sp, 48
     stur x3, [sp, 0]
     stur x11, [sp, 8]
@@ -1018,5 +1017,5 @@ luna:
     ldur x17, [sp, 32]
     ldur lr, [sp, 40]
     add sp, sp, 48
-    ret
+ret // Imprime una luna
 .endif

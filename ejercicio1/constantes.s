@@ -9,6 +9,7 @@
 .equ GPIO_BASE,    0x3f200000
 .equ GPIO_GPFSEL0, 0x00
 .equ GPIO_GPLEV0,  0x34
+// Delay --------------------------------------------------------------------------
 .equ DELAY, 0xAA
 .equ CUENTAREG, 11 // para lsl
 .equ ONDEXPAN, 13 
